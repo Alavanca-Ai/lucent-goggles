@@ -1,7 +1,7 @@
 :root {
     --color-paper: #f4f0e7;
     --color-ink: #171815;
-    --color-accent: #c7ff4a;
+    --color-accent: #00e5ff;
     
     --font-ui: 'Instrument Sans', sans-serif;
     --font-heading-em: 'Newsreader', serif;
@@ -502,7 +502,7 @@ p {
     align-items: center;
     justify-content: center;
     background: #0a0b0d;
-    border: 1px solid rgba(199, 255, 74, 0.15);
+    border: 1px solid rgba(0, 229, 255, 0.15);
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -523,7 +523,7 @@ p {
 .social-card::after { right: 0; background-color: #171815; }
 .social-card:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35), 0 10px 10px rgba(0, 0, 0, 0.22);
-    border-color: rgba(199, 255, 74, 0.35);
+    border-color: rgba(0, 229, 255, 0.35);
 }
 .social-card:hover .social-card-label { opacity: 0; }
 .social-card:hover::before { opacity: 0.5; transform: translateY(-100%); }
@@ -550,7 +550,7 @@ p {
 }
 .social-card .social-link svg { width: 19px; height: 19px; }
 .social-card .social-link:hover {
-    background-color: rgba(199, 255, 74, 0.15);
+    background-color: rgba(0, 229, 255, 0.15);
     color: #ffffff;
     animation: social-bounce 0.4s linear;
 }

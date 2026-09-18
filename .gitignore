@@ -1,0 +1,10 @@
+# Ambiente
+.env
+
+# Notas locais do projeto
+NOTES.md
+
+# Arquivos do OS e Logs
+*.log
+.DS_Store
+Thumbs.db

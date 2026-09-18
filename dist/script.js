@@ -49,9 +49,12 @@ document.addEventListener("DOMContentLoaded", () => {
             images[index] = img;
         };
 
-        // 1. Buffer inicial crítico: carrega os primeiros frames (1 a 15) imediatamente
+        // 1. Buffer inicial: frame 1 é carregado estaticamente no HTML síncrono (LCP)
+        images[1] = seqBg;
+        let currentFrameIndex = 1;
+
         const INITIAL_BUFFER = 15;
-        for (let i = 1; i <= INITIAL_BUFFER; i++) {
+        for (let i = 2; i <= INITIAL_BUFFER; i++) {
             loadFrame(i);
         }
 
@@ -84,7 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
             window.addEventListener('load', scheduleIdlePreload, { once: true });
         }
 
-        let currentFrameIndex = -1;
         let animationFrameId;
 
         // Pontos de referência do rosto na sequência original (fração da largura).

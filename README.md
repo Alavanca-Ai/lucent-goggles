@@ -51,6 +51,28 @@ O projeto não precisa de processo de `build` ou `npm run`. Ele foi pensado para
 
 ---
 
+## 🌐 Como Fazer o Deploy (Cloudflare Pages)
+
+Esta página foi construída para rodar na infraestrutura de alta velocidade da **Cloudflare Pages**. 
+Para subir o seu projeto da maneira correta (sem expor seus arquivos de configuração ou `.env`), siga os passos usando o `wrangler`:
+
+1. Crie uma pasta `dist/` e copie **apenas** os arquivos públicos para ela (isso impede que seus rascunhos e chaves vazem):
+   ```bash
+   mkdir dist
+   cp index.html style.css script.js dist/
+   cp -r assets dist/
+   ```
+2. Crie o projeto na Cloudflare forçando a infraestrutura clássica do Pages (bypassing a nova integração Workers que costuma falhar):
+   ```bash
+   npx wrangler pages project create "lucent-goggles" --production-branch "main" --force
+   ```
+3. Faça o deploy da pasta `dist/`:
+   ```bash
+   npx wrangler pages deploy dist --project-name "lucent-goggles" --branch "main"
+   ```
+
+---
+
 <div align="center">
   <i>"A água que se torna transparente. O design que corta a água antes mesmo de você perceber."</i>
 </div>

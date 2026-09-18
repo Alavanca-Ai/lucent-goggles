@@ -1,8 +1,9 @@
 # Ambiente
 .env
 
-# Notas locais do projeto
+# Notas e Diretrizes locais do projeto
 NOTES.md
+AGENTS.md
 
 # Arquivos do OS e Logs
 *.log

@@ -41,11 +41,47 @@ document.addEventListener("DOMContentLoaded", () => {
         const images = [];
         const currentFrame = index => `assets/sequence/frame_${index.toString().padStart(4, '0')}.jpg`;
 
-        // Preload de todos os frames para evitar flash/piscada na primeira troca
-        for (let i = 1; i <= frameCount; i++) {
+        // Carregamento Inteligente e Progressivo dos Frames
+        const loadFrame = index => {
+            if (index < 1 || index > frameCount || images[index]) return;
             const img = new Image();
-            img.src = currentFrame(i);
-            images[i] = img;
+            img.src = currentFrame(index);
+            images[index] = img;
+        };
+
+        // 1. Buffer inicial crítico: carrega os primeiros frames (1 a 15) imediatamente
+        const INITIAL_BUFFER = 15;
+        for (let i = 1; i <= INITIAL_BUFFER; i++) {
+            loadFrame(i);
+        }
+
+        // 2. Pré-carregamento progressivo em background quando o navegador estiver ocioso
+        const runWhenIdle = window.requestIdleCallback 
+            ? window.requestIdleCallback 
+            : cb => setTimeout(cb, 80);
+
+        let nextIdleFrame = INITIAL_BUFFER + 1;
+        const BATCH_SIZE = 6;
+
+        const scheduleIdlePreload = () => {
+            if (nextIdleFrame > frameCount) return;
+            runWhenIdle(deadline => {
+                let count = 0;
+                while (nextIdleFrame <= frameCount && count < BATCH_SIZE && (!deadline || deadline.timeRemaining() > 1)) {
+                    loadFrame(nextIdleFrame);
+                    nextIdleFrame++;
+                    count++;
+                }
+                if (nextIdleFrame <= frameCount) {
+                    scheduleIdlePreload();
+                }
+            });
+        };
+
+        if (document.readyState === 'complete') {
+            scheduleIdlePreload();
+        } else {
+            window.addEventListener('load', scheduleIdlePreload, { once: true });
         }
 
         let currentFrameIndex = -1;
@@ -102,6 +138,12 @@ document.addEventListener("DOMContentLoaded", () => {
             if (frameIndex !== currentFrameIndex || enquadramentoPendente) {
                 atualizarEnquadramentoMobile(frameIndex);
                 enquadramentoPendente = false;
+            }
+
+            // Buffer sob demanda: prioriza o carregamento dos frames próximos ao ponto atual de scroll
+            for (let offset = 0; offset <= 10; offset++) {
+                loadFrame(frameIndex + offset);
+                if (offset <= 4) loadFrame(frameIndex - offset);
             }
 
             if (frameIndex !== currentFrameIndex) {

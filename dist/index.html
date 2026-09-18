@@ -8,9 +8,11 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,wght@1,400&display=swap" rel="stylesheet">
     
+    <!-- Preload LCP Hero Image -->
+    <link rel="preload" as="image" href="assets/sequence/frame_0001.jpg" fetchpriority="high">
+
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -29,7 +31,7 @@
     <!-- SEQUENCE TRACK (INCLUDES HERO) -->
     <div class="scroll-sequence-wrapper" id="sequence-track">
         <div class="sequence-container" id="sequence-pin">
-            <img id="sequence-bg-img" src="assets/sequence/frame_0001.jpg" alt="Video Animation" />
+            <img id="sequence-bg-img" src="assets/sequence/frame_0001.jpg" alt="Video Animation" width="1280" height="720" fetchpriority="high" decoding="async" />
             <div id="sequence-overlay" class="sequence-overlay"></div>
         </div>
         

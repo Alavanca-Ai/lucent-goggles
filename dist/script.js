@@ -51,6 +51,37 @@ document.addEventListener("DOMContentLoaded", () => {
         let currentFrameIndex = -1;
         let animationFrameId;
 
+        // Pontos de referência do rosto na sequência original (fração da largura).
+        // Apenas o celular acompanha esses pontos; o desktop mantém seu recorte.
+        const telaMobile = window.matchMedia('(max-width: 760px)');
+        const pontosDeFoco = [[1, 0.745], [20, 0.69], [40, 0.57], [60, 0.51], [80, 0.5], [240, 0.5]];
+        let enquadramentoPendente = true;
+        window.addEventListener('resize', () => { enquadramentoPendente = true; }, { passive: true });
+
+        const atualizarEnquadramentoMobile = indice => {
+            if (!telaMobile.matches) {
+                seqBg.style.removeProperty('--enquadramento-mobile');
+                return;
+            }
+
+            let trecho = 1;
+            while (trecho < pontosDeFoco.length - 1 && indice > pontosDeFoco[trecho][0]) trecho++;
+            const [inicio, focoInicial] = pontosDeFoco[trecho - 1];
+            const [fim, focoFinal] = pontosDeFoco[trecho];
+            const progresso = Math.max(0, Math.min(1, (indice - inicio) / (fim - inicio)));
+            const foco = focoInicial + (focoFinal - focoInicial) * progresso;
+
+            // Compensa o corte de object-fit: cover em diferentes proporções de tela.
+            const largura = seqPin.clientWidth;
+            const altura = seqPin.clientHeight;
+            const proporcao = seqBg.naturalWidth && seqBg.naturalHeight
+                ? seqBg.naturalWidth / seqBg.naturalHeight : 16 / 9;
+            const larguraImagem = Math.max(largura, altura * proporcao);
+            const corte = larguraImagem - largura;
+            const posicao = corte > 0 ? (foco * larguraImagem - largura / 2) / corte : 0.5;
+            seqBg.style.setProperty('--enquadramento-mobile', `${(Math.max(0, Math.min(1, posicao)) * 100).toFixed(3)}%`);
+        };
+
         const render = () => {
             // progresso = quanto da "pista" já foi percorrido
             const travel = seqTrack.offsetHeight - seqPin.offsetHeight;
@@ -67,6 +98,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let frameIndex = Math.floor(scrollFraction * (frameCount - 1)) + 1;
             frameIndex = Math.max(1, Math.min(frameIndex, frameCount)); // clamp(1, frameCount)
+
+            if (frameIndex !== currentFrameIndex || enquadramentoPendente) {
+                atualizarEnquadramentoMobile(frameIndex);
+                enquadramentoPendente = false;
+            }
 
             if (frameIndex !== currentFrameIndex) {
                 const img = images[frameIndex];

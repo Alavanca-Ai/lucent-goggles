@@ -367,6 +367,15 @@ p {
     max-width: 500px;
 }
 
+#seq2 h2 {
+    font-size: 5rem;
+    margin-bottom: 20px;
+}
+
+#seq2 p {
+    font-size: 1.25rem;
+}
+
 /* === ANIMATIONS === */
 .reveal {
     opacity: 0;
@@ -390,6 +399,11 @@ p {
 
 /* === MOBILE BREAKPOINT === */
 @media (max-width: 760px) {
+    /* Enquadramento exclusivo do celular, acompanhando a nadadora. */
+    #sequence-bg-img {
+        object-position: var(--enquadramento-mobile, 80%) 50%;
+    }
+
     .nav-links {
         display: none;
     }
@@ -449,4 +463,101 @@ p {
 .btn-primary:active {
     transform: translateY(0);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Textos e rodapé adaptados ao celular, sem alterar o desktop. */
+@media (max-width: 760px) {
+    .seq-section,
+    .closure-section {
+        padding-left: 22px;
+        padding-right: 22px;
+    }
+
+    .seq-text,
+    .closure-content,
+    .footer-brand,
+    .link-column {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .seq-text h2,
+    #seq2 h2,
+    .editorial-section h2,
+    .closure-content h2 {
+        font-size: clamp(32px, 9vw, 48px);
+        line-height: 1.08;
+        overflow-wrap: anywhere;
+        margin-bottom: 24px;
+    }
+
+    .seq-text p,
+    #seq2 p,
+    .editorial-section p,
+    .closure-content p {
+        font-size: 17px;
+        line-height: 1.55;
+        max-width: 100%;
+        overflow-wrap: break-word;
+    }
+
+    .editorial-section,
+    .editorial-section.reverse {
+        flex-direction: column;
+        justify-content: center;
+        align-items: stretch;
+    }
+
+    .editorial-section .content-left,
+    .editorial-section .content-right {
+        flex: none;
+        min-width: 0;
+        width: 100%;
+    }
+
+    #visao .content-right,
+    #hidro .content-left {
+        display: none;
+    }
+
+    .closure-content .btn-primary {
+        max-width: 100%;
+        padding: 18px 24px;
+        font-size: 14px;
+        line-height: 1.5;
+        white-space: normal;
+    }
+
+    .site-footer {
+        padding: 56px 22px 28px;
+    }
+
+    .footer-container {
+        gap: 32px;
+        padding-bottom: 32px;
+    }
+
+    .footer-links {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 32px 20px;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .site-footer p,
+    .site-footer a {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    .footer-brand p,
+    .footer-bottom p {
+        margin-bottom: 0;
+    }
+
+    .footer-bottom {
+        margin-top: 28px;
+        gap: 20px;
+    }
 }

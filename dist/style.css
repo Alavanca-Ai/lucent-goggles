@@ -338,6 +338,7 @@ p {
 }
 
 #sequence-bg-img {
+    display: block;
     position: absolute;
     inset: 0;
     width: 100%;

@@ -54,9 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
         let currentFrameIndex = 1;
 
         const INITIAL_BUFFER = 15;
-        for (let i = 2; i <= INITIAL_BUFFER; i++) {
-            loadFrame(i);
-        }
 
         // 2. Pré-carregamento progressivo em background quando o navegador estiver ocioso
         const runWhenIdle = window.requestIdleCallback 
@@ -81,12 +78,22 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         };
 
-        if (document.readyState === 'complete') {
+        // Não executa nenhum carregamento secundário nos primeiros 3 segundos para proteger o LCP,
+        // a menos que o usuário inicie o scroll antecipadamente.
+        let preloadStarted = false;
+        const startPreload = () => {
+            if (preloadStarted) return;
+            preloadStarted = true;
+            for (let i = 2; i <= INITIAL_BUFFER; i++) {
+                loadFrame(i);
+            }
             scheduleIdlePreload();
-        } else {
-            window.addEventListener('load', scheduleIdlePreload, { once: true });
-        }
+        };
 
+        setTimeout(startPreload, 3000);
+        window.addEventListener("scroll", startPreload, { passive: true, once: true });
+
+        let userHasScrolled = false;
         let animationFrameId;
 
         // Pontos de referência do rosto na sequência original (fração da largura).
@@ -97,10 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener('resize', () => { enquadramentoPendente = true; }, { passive: true });
 
         const atualizarEnquadramentoMobile = indice => {
-            if (!telaMobile.matches) {
-                seqBg.style.removeProperty('--enquadramento-mobile');
-                return;
-            }
+            if (!userHasScrolled || !telaMobile.matches) return;
 
             let trecho = 1;
             while (trecho < pontosDeFoco.length - 1 && indice > pontosDeFoco[trecho][0]) trecho++;
@@ -121,6 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         const render = () => {
+            if (!userHasScrolled) return;
+
             // progresso = quanto da "pista" já foi percorrido
             const travel = seqTrack.offsetHeight - seqPin.offsetHeight;
             let scrollFraction = travel > 0 ? -seqTrack.getBoundingClientRect().top / travel : 0;
@@ -153,10 +159,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 seqBg.src = (img && img.complete) ? img.src : currentFrame(frameIndex);
                 currentFrameIndex = frameIndex;
             }
-            
-            animationFrameId = requestAnimationFrame(render);
         };
 
-        animationFrameId = requestAnimationFrame(render);
+        // O render é acionado estritamente sob demanda do evento de scroll
+        window.addEventListener("scroll", () => {
+            if (!userHasScrolled) userHasScrolled = true;
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            animationFrameId = requestAnimationFrame(render);
+        }, { passive: true });
     }
 });
